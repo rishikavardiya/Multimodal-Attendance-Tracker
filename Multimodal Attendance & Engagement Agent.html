@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Multimodal Attendance & Engagement Agent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef3f2;--surface:#fff;--ink:#12272e;--mute:#53686f;--line:#cfdcdb;--teal:#17766f;--teal-soft:#d6ece8;--dip:#b3305f;--dip-soft:#f6dde6;--amber:#c28a12;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1e23;--surface:#16292f;--ink:#e6f0ef;--mute:#9bb2b5;--line:#2a4349;--teal:#4fc2b8;--teal-soft:#1b4140;--dip:#ef7fa5;--dip-soft:#4a2434;--amber:#e4b34a}}
+:root[data-theme="dark"]{--bg:#0f1e23;--surface:#16292f;--ink:#e6f0ef;--mute:#9bb2b5;--line:#2a4349;--teal:#4fc2b8;--teal-soft:#1b4140;--dip:#ef7fa5;--dip-soft:#4a2434;--amber:#e4b34a}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 "IBM Plex Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:"Bricolage Grotesque","Trebuchet MS",sans-serif;line-height:1.1;margin:0;letter-spacing:-.02em}
+h1{font-size:clamp(2.2rem,5.5vw,4rem);font-weight:700;max-width:16ch}
+h2{font-size:clamp(1.6rem,3.4vw,2.3rem);font-weight:700;margin-bottom:.6rem}
+h3{font-size:1.2rem;font-weight:500;margin-bottom:.4rem}
+p{margin:0 0 1rem;max-width:62ch}
+a{color:var(--teal)}
+:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+nav{display:flex;gap:20px;align-items:center;justify-content:space-between;padding:18px 0;flex-wrap:wrap}
+nav b{font-family:"Bricolage Grotesque",sans-serif;font-size:1.05rem}
+nav div{display:flex;gap:18px;font-size:.95rem}
+nav a{color:var(--mute);text-decoration:none}
+nav a:hover{color:var(--ink)}
+.hero{padding:34px 0 20px}
+.lede{font-size:1.2rem;color:var(--mute);margin:18px 0 28px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px}
+.demo-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.demo-head span{color:var(--mute);font-size:.9rem}
+svg.chart{width:100%;height:auto;display:block}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:.88rem;color:var(--mute);margin:4px 0 12px}
+.legend i{display:inline-block;width:18px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+input[type=range]{width:100%;accent-color:var(--teal);margin:6px 0 14px}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.stat{border-left:3px solid var(--teal);padding-left:12px}
+.stat.low{border-color:var(--dip)}
+.stat small{display:block;color:var(--mute);font-size:.85rem}
+.stat strong{font:700 1.7rem "Bricolage Grotesque",sans-serif}
+.tip{margin-top:16px;padding:14px 16px;border-radius:10px;background:var(--teal-soft);min-height:4.2em}
+.tip.low{background:var(--dip-soft)}
+.tip b{display:block;font-family:"Bricolage Grotesque",sans-serif;font-weight:500;margin-bottom:2px}
+section{padding:54px 0}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:22px}
+.split{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:30px;align-items:start}
+table{width:100%;border-collapse:collapse;font-size:.95rem}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}
+th{font-weight:500;color:var(--mute);font-size:.85rem}
+.tag{display:inline-block;padding:1px 10px;border-radius:99px;font-size:.82rem}
+.tag.p{background:var(--teal-soft);color:var(--teal)}
+.tag.d{background:var(--dip-soft);color:var(--dip)}
+.tag.a{background:transparent;color:var(--mute);border:1px solid var(--line)}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:0;margin-top:22px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
+.flow div{padding:18px;border-right:1px solid var(--line)}
+.flow div:last-child{border-right:0}
+.flow p{font-size:.93rem;color:var(--mute);margin:0}
+ul.plain{padding-left:1.1rem;margin:0}
+ul.plain li{margin-bottom:.5rem;max-width:60ch}
+footer{padding:36px 0 50px;color:var(--mute);font-size:.9rem;border-top:1px solid var(--line)}
+@media (max-width:640px){.flow div{border-right:0;border-bottom:1px solid var(--line)}.flow div:last-child{border-bottom:0}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav><b>Attendance &amp; Engagement Agent</b><div><a href="#attendance">Attendance</a><a href="#engagement">Engagement</a><a href="#suggestions">Suggestions</a><a href="#privacy">Privacy</a></div></nav>
+
+<header class="hero">
+<h1>Know who’s in the room and how the session is going.</h1>
+<p class="lede">An offline classroom assistant that marks attendance from sustained presence, tracks engagement through the session, and suggests what to change while there’s still time. Drag the slider to replay a 50-minute class.</p>
+
+<div class="panel" id="engagement" aria-label="Session replay demo">
+<div class="demo-head"><h3>Session replay: Data Structures, 50 minutes</h3><span>Sample data</span></div>
+<div class="legend"><span><i style="background:var(--ink)"></i>Fused engagement</span><span><i style="background:var(--teal);opacity:.6"></i>Head pose</span><span><i style="background:var(--amber)"></i>Audio activity</span><span><i style="background:var(--mute)"></i>Movement</span></div>
+<svg class="chart" id="chart" viewBox="0 0 800 240" role="img" aria-label="Engagement over time"></svg>
+<label for="t" class="sr" style="position:absolute;left:-9999px">Session minute</label>
+<input type="range" id="t" min="0" max="49" value="12">
+<div class="readout">
+<div class="stat"><small>Minute</small><strong id="rMin">12</strong></div>
+<div class="stat" id="sEng"><small>Engagement</small><strong id="rEng">–</strong></div>
+<div class="stat"><small>Confirmed present</small><strong id="rPres">–</strong></div>
+<div class="stat"><small>Idle for 2+ min</small><strong id="rIdle">–</strong></div>
+</div>
+<div class="tip" id="tip"></div>
+</div>
+</header>
+
+<section id="attendance">
+<div class="split">
+<div>
+<h2>Attendance that ignores passers-by</h2>
+<p>A single detected frame doesn’t count. A learner is marked present only after staying in view for three continuous minutes, and the log records the time they first appeared.</p>
+<p>Move the slider above. Students who flicker in and out of frame stay as “Seen” and never reach the register.</p>
+<p>The result is a timestamped log, with no roll call and no proxy attendance.</p>
+</div>
+<div class="panel"><table><thead><tr><th>Learner</th><th>First seen</th><th>Status</th></tr></thead><tbody id="roster"></tbody></table></div>
+</div>
+</section>
+
+<section>
+<h2>How the agent reads a session</h2>
+<p>Video and audio are processed on the classroom machine. Four stages turn raw signals into something an instructor can act on.</p>
+<div class="flow">
+<div><h3>Detect and track</h3><p>Computer vision finds and follows each participant across frames, live or recorded.</p></div>
+<div><h3>Measure</h3><p>Head pose, movement, inactivity time and audio activity are scored per interval.</p></div>
+<div><h3>Fuse</h3><p>Signals combine into one engagement trend, so a quiet but attentive room isn’t flagged as disengaged.</p></div>
+<div><h3>Reason</h3><p>An agent reads the trend and writes context-aware teaching suggestions.</p></div>
+</div>
+</section>
+
+<section id="suggestions">
+<h2>Suggestions tied to the moment</h2>
+<p>The agent connects a pattern to a likely cause and a concrete next step. These are the kinds of prompts an instructor sees.</p>
+<div class="cols">
+<div class="panel"><h3>Attention drop after 20 minutes</h3><p>Head pose and movement fell together during a long explanation. Break the block with a short worked example.</p></div>
+<div class="panel"><h3>Audio peak, high engagement</h3><p>Discussion lifted the whole room. Schedule more questions or pair work around the same point next time.</p></div>
+<div class="panel"><h3>Several learners idle at once</h3><p>Long inactivity across one area of the room. Move closer, or check whether the slide is readable from the back.</p></div>
+</div>
+</section>
+
+<section>
+<div class="split">
+<div>
+<h2>Session analytics for each learner</h2>
+<p>After class, each learner’s session summarizes when they arrived, how long they stayed, and when their attention was highest. The goal is to help learners see their own patterns, not to rank them.</p>
+<ul class="plain"><li>Arrival time and total time present</li><li>Attention across early, middle and late session</li><li>Participation moments, drawn from audio activity</li></ul>
+</div>
+<div class="panel" id="privacy">
+<h2>Private by design</h2>
+<p>The whole system runs offline. Nothing is uploaded, no cloud service sees the classroom, and no one needs an account to be counted.</p>
+<ul class="plain"><li>Processing stays on local hardware</li><li>Engagement is scored from behavior signals, not identity profiling</li><li>Instructors get trends and suggestions, not surveillance clips</li></ul>
+</div>
+</div>
+</section>
+
+<footer>Multimodal Attendance &amp; Engagement Agent. Computer vision, audio signal processing and agent-based reasoning, running fully offline. Demo values on this page are illustrative.</footer>
+</div>
+
+<script>
+(function(){
+var N=50;
+function g(m,c,w,h){return Math.exp(-Math.pow((m-c)/w,2))*h}
+var head=[],mov=[],aud=[],fus=[];
+for(var m=0;m<N;m++){
+ var n=Math.sin(m*1.7)*.04+Math.cos(m*.9)*.03;
+ var h=.82-g(m,26,5,.4)+g(m,40,4,.1)-m*.002+n;
+ var v=.7-g(m,26,6,.35)+g(m,40,4,.15)+n;
+ var a=.18+g(m,5,2,.1)+g(m,39,4,.55)+g(m,15,2,.15)+Math.abs(n);
+ head.push(clamp(h));mov.push(clamp(v));aud.push(clamp(a));
+ fus.push(clamp(.45*h+.3*v+.25*Math.min(1,a*1.6)));
+}
+function clamp(x){return Math.max(.05,Math.min(.98,x))}
+var W=800,H=240,L=34,R=10,T=10,B=26;
+function X(m){return L+(W-L-R)*m/(N-1)}
+function Y(v){return T+(H-T-B)*(1-v)}
+function path(a){return a.map(function(v,i){return(i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)}).join('')}
+var s='';
+[0,.5,1].forEach(function(t){s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(t)+'" y2="'+Y(t)+'" stroke="var(--line)"/><text x="'+(L-6)+'" y="'+(Y(t)+4)+'" font-size="11" text-anchor="end" fill="var(--mute)">'+Math.round(t*100)+'</text>'});
+for(var k=0;k<=50;k+=10){s+='<text x="'+X(Math.min(k,N-1))+'" y="'+(H-8)+'" font-size="11" text-anchor="middle" fill="var(--mute)">'+k+'m</text>'}
+s+='<rect x="'+X(21)+'" y="'+T+'" width="'+(X(31)-X(21))+'" height="'+(H-T-B)+'" fill="var(--dip-soft)" opacity=".7"/>';
+s+='<rect x="'+X(35)+'" y="'+T+'" width="'+(X(44)-X(35))+'" height="'+(H-T-B)+'" fill="var(--teal-soft)" opacity=".7"/>';
+s+='<path d="'+path(head)+'" fill="none" stroke="var(--teal)" stroke-width="2" opacity=".6"/>';
+s+='<path d="'+path(mov)+'" fill="none" stroke="var(--mute)" stroke-width="2"/>';
+s+='<path d="'+path(aud)+'" fill="none" stroke="var(--amber)" stroke-width="2"/>';
+s+='<path d="'+path(fus)+'" fill="none" stroke="var(--ink)" stroke-width="3.5"/>';
+s+='<line id="cur" x1="0" x2="0" y1="'+T+'" y2="'+(H-B)+'" stroke="var(--teal)" stroke-width="2"/><circle id="dot" r="6" fill="var(--ink)" stroke="var(--surface)" stroke-width="2"/>';
+document.getElementById('chart').innerHTML=s;
+
+var roster=[
+["Aarav S.",0,null],["Meera K.",0,null],["Rohan P.",1,null],["Isha T.",2,null],["Kabir D.",3,null],["Ananya R.",4,null],
+["Vihaan M.",6,null],["Diya G.",8,null],["Arjun N.",10,null],["Sara B.",14,null],
+["Nikhil V.",5,[5]],["Tanvi J.",18,[18,19]]
+];
+// flicker students: seen only briefly, never confirmed
+function stat(r,m){
+ if(r[2]){return m>=r[1]?['d','Seen, not confirmed']:['a','Not seen']}
+ if(m<r[1])return['a','Not seen'];
+ if(m<r[1]+3)return['d','Seen, confirming'];
+ return['p','Present'];
+}
+function ts(min){var t=9*60+min;return('0'+Math.floor(t/60)).slice(-2)+':'+('0'+t%60).slice(-2)}
+var tip=[
+[0,8,0,'Session start','Arrivals are still settling in. Open with a quick question to pull everyone’s focus to the topic.'],
+[9,20,0,'Steady attention','Head pose and movement are stable. Good moment to introduce the harder concept.'],
+[21,31,1,'Attention drop','Head pose and movement fell together during a long explanation. Break the block with a short worked example or a poll.'],
+[32,34,0,'Recovering','Engagement is climbing back. Keep the next activity short and visible.'],
+[35,44,0,'Interaction peak','Audio activity is high and the whole room is engaged. Extend this discussion, or tie it to the next topic.'],
+[45,49,0,'Wrap-up','Engagement is tapering as expected. Summarize and set one take-home question.']
+];
+var el=function(i){return document.getElementById(i)};
+function upd(){
+ var m=+el('t').value;
+ el('rMin').textContent=m;
+ var e=fus[m];
+ el('rEng').textContent=Math.round(e*100)+'%';
+ el('sEng').className='stat'+(e<.55?' low':'');
+ var present=roster.filter(function(r){return stat(r,m)[1]==='Present'}).length;
+ el('rPres').textContent=present+' / '+roster.length;
+ el('rIdle').textContent=Math.max(0,Math.round((1-head[m])*roster.length*.6));
+ var cx=X(m);
+ el('cur').setAttribute('x1',cx);el('cur').setAttribute('x2',cx);
+ el('dot').setAttribute('cx',cx);el('dot').setAttribute('cy',Y(e));
+ var t=tip.filter(function(x){return m>=x[0]&&m<=x[1]})[0];
+ el('tip').className='tip'+(t[2]?' low':'');
+ el('tip').innerHTML='<b>'+t[3]+' ('+ts(m)+')</b>'+t[4];
+ el('roster').innerHTML=roster.map(function(r){
+  var s=stat(r,m);
+  return'<tr><td>'+r[0]+'</td><td>'+(m>=r[1]?ts(r[1]):'–')+'</td><td><span class="tag '+s[0]+'">'+s[1]+'</span></td></tr>'
+ }).join('');
+}
+el('t').addEventListener('input',upd);
+upd();
+})();
+</script>
+</body>
+</html>
